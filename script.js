@@ -98,6 +98,70 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('mousemove', handleSmooshText);
   window.addEventListener('touchmove', handleSmooshText);
 
+  const fullscreenWrapper = document.getElementById('fullscreenWrapper');
+  let lastTap = 0;
+
+  const isFullscreen = () => {
+    return (
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+  };
+
+  const enterFullscreen = (element) => {
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (isFullscreen()) {
+      exitFullscreen();
+    } else {
+      enterFullscreen(fullscreenWrapper);
+    }
+  };
+
+  const handleDoubleClick = (e) => {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    clearTimeout(timeout);
+
+    if (tapLength < 500 && tapLength > 0) {
+      toggleFullscreen();
+    } else {
+      timeout = setTimeout(() => {
+        clearTimeout(timeout);
+      }, 500);
+    }
+
+    lastTap = currentTime;
+  };
+
+  fullscreenWrapper.addEventListener('touchstart', handleDoubleClick);
+  fullscreenWrapper.addEventListener('dblclick', toggleFullscreen);
+
+
   drawGradient(currentX, currentY);
   animate();
 });

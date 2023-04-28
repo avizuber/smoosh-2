@@ -3,10 +3,12 @@ html {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  background: white;
 }
 
 canvas {
   display: block;
+  background: white;
 }
 
 #smooshText {
